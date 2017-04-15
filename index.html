@@ -19,8 +19,8 @@ TESTgetLocationsWithTrait());
 /*
  * Return true if the park (a string) has a trait (also a string)
  */
-function parkHasTrait(park, trait) {
-    return getLocationsWithTrait(trait).indexOf(park) != -1; 
+function locationHasTrait(loc, trait) {
+    return getLocationsWithTrait(trait).indexOf(loc) != -1; 
 }
 
 /*
@@ -80,6 +80,23 @@ var results = [];
     }
 
     return results;
+}
+
+/*
+ * returns like this: {'BASEBALL INFIELD':true or false}
+ */
+function getLocationTraits(location) {
+    var location_traits = {};
+    for(i = 0; i < LOCATION_TRAITS.length; i++) {
+        
+    }
+}
+
+/*
+ * filter:{'BASEBALL INFIELD':true or false}
+ */
+function filterLocations(locations, filters) {
+    
 }
 
 function TESTgetLocationsWithTrait() {
