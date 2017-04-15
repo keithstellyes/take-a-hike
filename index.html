@@ -11,7 +11,29 @@ const LOCATION_TRAITS = ["BASEBALL INFIELD", "COMMUNITY GARDEN POINT",
 
 console.log("Test TESTgetLocationsWithTrait():", 
 TESTgetLocationsWithTrait());
-                         
+
+/*
+ * Generate all locations found.
+ * PUTTING THE '''HACK''' IN HACKATHON
+ */                  
+var ALL_LOCATIONS_NAMES = [];
+var ALL_LOCATIONS_OBJTS = [];
+
+for(i = 0; i < LOCATION_TRAITS.length; i++) {
+    var trait = LOCATION_TRAITS[i];
+    var theselocations = getLocationsWithTrait(trait);
+    for(j = 0; j < theselocations.length; j++) {
+        var thislocation = theselocations[j];
+        if(ALL_LOCATIONS_NAMES.indexOf(thislocation) == -1) {
+            ALL_LOCATIONS_NAMES.push(thislocation);
+            var o = [thislocation, getLocationCoords(thislocation)];
+            ALL_LOCATIONS_OBJTS.push(o);     
+        }
+    }
+}
+
+console.log("ALL_LOCATIONS_OBJTS", ALL_LOCATIONS_OBJTS);
+
 /*
  * DO NOT MODIFY PASSED IN VARIABLES PLEASE! :)
  */
@@ -66,9 +88,9 @@ function getTraitJSON(trait) {
  */
 function getLocationsWithTrait(trait) {
 
-var traitJsonObj = getTraitJSON(trait);
+    var traitJsonObj = getTraitJSON(trait);
 
-var results = [];
+    var results = [];
 
     /*
      * iterate through traitsJsonObj, appending each location to results
@@ -87,26 +109,81 @@ var results = [];
  */
 function getLocationTraits(location) {
     var location_traits = {};
-    for(i = 0; i < LOCATION_TRAITS.length; i++) {
-        
+    for(j = 0; j < LOCATION_TRAITS.length; j++) {
+        var trait = LOCATION_TRAITS[j];
+        location_traits[trait] = locationHasTrait(location, trait);
     }
+
+    return location_traits;
 }
 
 /*
  * filter:{'BASEBALL INFIELD':true or false}
  */
 function filterLocations(locations, filters) {
-    
+    var resultlocs = []
+    for(i = 0; i < locations.length; i++) {
+        var loc = locations[i];
+        var loctraits = getLocationTraits(loc);
+        for(j = 0; j < LOCATION_TRAITS.length; j++) {
+            var trait = LOCATION_TRAITS[i];
+            if(filters[trait] && loctraits[trait]) {
+                resultlocs.push(loc);
+                break;            
+            }    
+        }    
+    }
+
+    return resultlocs;
+}
+
+/*
+ * Putting the HACK in hackathon
+ */
+function getLocationCoords(location) {
+    var loctraits = getLocationTraits(location);
+    var coords = [];
+    var traithas = '';
+    for(i = 0; i < LOCATION_TRAITS.length; i++) {
+        var trait = LOCATION_TRAITS[i];
+        if(loctraits[trait]) {
+            traithas = trait;
+            break;        
+        }
+    }
+    var traitJSON = getTraitJSON(traithas);
+    for(i = 0; i < traitJSON['features'].length; i++) {
+        var feature = traitJSON['features'][i];
+        if(feature['LOCATION'] == location) {
+            coords.push(feature['POINT_X']);
+            coords.push(feature['POINT_Y']);
+
+            return coords;
+        }    
+    }
+    return 'ERROR IN getLocationCoords';
+}
+
+/*
+ * All locations have the following keys:
+ * coords
+ * name
+ */
+function getLocationsInRadius(mylocation, locations) {
+    for(i = 0; i < locations.length; i++) {
+        var loc = locations[i];
+            
+    }
 }
 
 function TESTgetLocationsWithTrait() {
-  var tresults = getLocationsWithTrait("BASEBALL INFIELD");
+    var tresults = getLocationsWithTrait("BASEBALL INFIELD");
 
-  var t1 = tresults.length == 27;
-  var t2 = tresults.indexOf('JEFFERSON PARK') != -1;
-  var t3 = true;
+    var t1 = tresults.length == 27;
+    var t2 = tresults.indexOf('JEFFERSON PARK') != -1;
+    var t3 = true;
   
-  return t1 && t2 && t3;
+    return t1 && t2 && t3;
 }
 
 </script>
